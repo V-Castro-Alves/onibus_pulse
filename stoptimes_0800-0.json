@@ -1,0 +1,233 @@
+[
+    {
+        "stop_id": "2579",
+        "stop_sequence": 1,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:10:00",
+                "departure_time": "22:10:00"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:35:00",
+                "departure_time": "22:35:00"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:00:00",
+                "departure_time": "23:00:00"
+            }
+        ]
+    },
+    {
+        "stop_id": "1208",
+        "stop_sequence": 2,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:11:15",
+                "departure_time": "22:11:15"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:36:15",
+                "departure_time": "22:36:15"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:01:15",
+                "departure_time": "23:01:15"
+            }
+        ]
+    },
+    {
+        "stop_id": "1198",
+        "stop_sequence": 3,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:12:09",
+                "departure_time": "22:12:09"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:37:09",
+                "departure_time": "22:37:09"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:02:09",
+                "departure_time": "23:02:09"
+            }
+        ]
+    },
+    {
+        "stop_id": "1187",
+        "stop_sequence": 4,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:13:26",
+                "departure_time": "22:13:26"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:38:26",
+                "departure_time": "22:38:26"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:03:26",
+                "departure_time": "23:03:26"
+            }
+        ]
+    },
+    {
+        "stop_id": "2243",
+        "stop_sequence": 5,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:14:33",
+                "departure_time": "22:14:33"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:39:33",
+                "departure_time": "22:39:33"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:04:33",
+                "departure_time": "23:04:33"
+            }
+        ]
+    },
+    {
+        "stop_id": "2802",
+        "stop_sequence": 6,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:15:12",
+                "departure_time": "22:15:12"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:40:12",
+                "departure_time": "22:40:12"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:05:12",
+                "departure_time": "23:05:12"
+            }
+        ]
+    },
+    {
+        "stop_id": "2801",
+        "stop_sequence": 7,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:18:58",
+                "departure_time": "22:18:58"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:43:58",
+                "departure_time": "22:43:58"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:08:58",
+                "departure_time": "23:08:58"
+            }
+        ]
+    },
+    {
+        "stop_id": "2027",
+        "stop_sequence": 8,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:20:12",
+                "departure_time": "22:20:12"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:45:12",
+                "departure_time": "22:45:12"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:10:12",
+                "departure_time": "23:10:12"
+            }
+        ]
+    },
+    {
+        "stop_id": "2016",
+        "stop_sequence": 9,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:21:13",
+                "departure_time": "22:21:13"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:46:13",
+                "departure_time": "22:46:13"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:11:13",
+                "departure_time": "23:11:13"
+            }
+        ]
+    },
+    {
+        "stop_id": "2705",
+        "stop_sequence": 10,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:22:38",
+                "departure_time": "22:22:38"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:47:38",
+                "departure_time": "22:47:38"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:12:38",
+                "departure_time": "23:12:38"
+            }
+        ]
+    },
+    {
+        "stop_id": "2609",
+        "stop_sequence": 11,
+        "times": [
+            {
+                "trip_id": "T-SAB-28-36-0800-0",
+                "arrival_time": "22:24:00",
+                "departure_time": "22:24:00"
+            },
+            {
+                "trip_id": "T-SAB-21-49-0800-0",
+                "arrival_time": "22:49:00",
+                "departure_time": "22:49:00"
+            },
+            {
+                "trip_id": "T-SAB-28-38-0800-0",
+                "arrival_time": "23:14:00",
+                "departure_time": "23:14:00"
+            }
+        ]
+    }
+]

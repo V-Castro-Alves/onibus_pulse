@@ -1,0 +1,18 @@
+[
+    {
+        "route_id": "0800",
+        "route_long_name": "Iririú / Centro",
+        "direction_id": 0,
+        "shape_id": "0800-0",
+        "trip_headsign": "Iririú / Centro - Ida para Terminal Central",
+        "route_color": "#DD0000"
+    },
+    {
+        "route_id": "0800",
+        "route_long_name": "Iririú / Centro",
+        "direction_id": 1,
+        "shape_id": "0800-1",
+        "trip_headsign": "Iririú / Centro - Volta para Estação Iririú",
+        "route_color": "#DD0000"
+    }
+]

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Data Retrieval</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+
+<body>
+    <h1>Bus Data API</h1>
+
+    <!-- Step 1: Trip ID Form -->
+    <form id="tripForm">
+        <label for="trip_id">Trip ID:</label>
+        <input type="text" id="trip_id" name="trip_id" required><br><br>
+        <input type="submit" value="Get Route Trip Info">
+    </form>
+
+    <h2>Route Trip Info:</h2>
+    <div id="routeData"></div>
+
+    <!-- Step 2: Direction ID Form -->
+    <form id="directionForm" style="display: none;">
+        <label for="direction_id">Direction ID:</label>
+        <input type="text" id="direction_id" name="direction_id" required><br><br>
+        <input type="submit" value="Get Shape Stops">
+    </form>
+
+    <h2>Shape Stops:</h2>
+    <div id="shapeStops"></div>
+
+    <!-- Step 3: Stop ID Form -->
+    <form id="stopForm" style="display: none;">
+        <label for="stop_id">Stop ID:</label>
+        <input type="text" id="stop_id" name="stop_id" required><br><br>
+        <input type="submit" value="Get Stop Times">
+    </form>
+
+    <h2>Stop Times:</h2>
+    <div id="stopTimes"></div>
+
+</body>
+
+</html>

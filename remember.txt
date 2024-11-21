@@ -1,0 +1,87 @@
+Important Responses
+
+'routeNumber' -> ex: 0800 (https://onibus.info/api/routetrips/0800)
+        Has: trip_headsign, direction_id, shape_id
+---
+'routeNumber'-'routeDirection' -> ex: 0800-0, 0290-1 (https://onibus.info/api/shapestops/0800-0)
+        Has: stop_id, stop_name
+---
+'routeNumber'-'routeDirection' -> ex: 0800-0, 0290-1 (https://onibus.info/api/stoptimes/shape/0800-0)
+        Has: stop_id, arrival_time
+---
+'routeNumber'?date=YYYY-MM-DD -> ex: 0800?date=2024-11-20 (https://onibus.info/api/timetableschedule/0800?date=2024-11-20)
+        Has: direction_id, service_id
+---
+Search Mechanism
+HEADERS:
+Request URL:
+https://onibus.info/api/search
+Request Method:
+POST
+Status Code:
+200 OK
+Remote Address:
+35.199.64.78:443
+Referrer Policy:
+strict-origin-when-cross-origin
+content-encoding:
+gzip
+content-type:
+application/json; charset=utf-8
+date:
+Thu, 21 Nov 2024 00:06:42 GMT
+etag:
+W/"12b4-A7QWhD9NntCihJJGUQgbK3FkJv0"
+server:
+nginx/1.19.1
+vary:
+Accept-Encoding
+x-powered-by:
+Express
+:authority:
+onibus.info
+:method:
+POST
+:path:
+/api/search
+:scheme:
+https
+accept:
+application/json, text/plain, */*
+accept-encoding:
+gzip, deflate, br, zstd
+accept-language:
+pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7,es;q=0.6
+cache-control:
+no-cache
+content-length:
+24
+content-type:
+application/json;charset=UTF-8
+cookie:
+_ga=GA1.2.1990496710.1709839118; _gid=GA1.2.1350386557.1732139790; _gat=1; _ga_V4EKZCQ0ZJ=GS1.2.1732143814.42.1.1732147600.0.0.0
+origin:
+https://onibus.info
+pragma:
+no-cache
+priority:
+u=1, i
+referer:
+https://onibus.info/
+sec-ch-ua:
+"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+sec-ch-ua-mobile:
+?0
+sec-ch-ua-platform:
+"Windows"
+sec-fetch-dest:
+empty
+sec-fetch-mode:
+cors
+sec-fetch-site:
+same-origin
+user-agent:
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+
+PAYLOAD:
+{term: "ir", limit: 20}
