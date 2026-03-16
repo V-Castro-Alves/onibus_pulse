@@ -1,48 +1,38 @@
-# Onibus Pulse - System Documentation
+# Onibus Pulse - System Documentation (Backend)
 
-Onibus Pulse is a real-time bus tracking system that scrapes data from `onibus.info`. It provides information about bus routes, stop locations, schedules, and real-time Estimated Time of Arrival (ETA).
+The **Onibus Pulse Backend** is a FastAPI-based service designed to provide real-time bus tracking data for the **Onibus Pulse** Flutter application.
 
 ## System Architecture
 
-The system consists of two main components:
-1.  **Scraper (`scraper.py`)**: Handles communication with the `onibus.info` API. It includes a cookie refresh mechanism using Selenium to bypass anti-bot protections (like Cloudflare).
-2.  **CLI App (`main.py`)**: Provides a user interface to interact with the scraper, allowing users to search for routes, list stops, and track bus ETAs in real-time.
+The backend consists of:
+1.  **FastAPI Application (`main.py`)**: Exposes REST endpoints for the Flutter frontend.
+2.  **Scraper (`scraper.py`)**: Handles communication with `onibus.info`. Uses Selenium for session cookie acquisition to bypass Cloudflare protection.
+3.  **Real-time ETA Logic**: Dynamically calculates the Estimated Time of Arrival (ETA) by merging scheduled arrival data with real-time trip delays.
 
-## API Endpoints
+## API Endpoints (Current Implementation)
 
-All API calls are made to `https://onibus.info/api/`.
+| Endpoint | Method | Parameters | Description |
+| :--- | :--- | :--- | :--- |
+| `/routes/{route_id}` | GET | `route_id` (e.g., `0800`) | Returns all directions (shapes) available for a specific route. |
+| `/stops/{shape_id}` | GET | `shape_id` (e.g., `0800-0`) | Lists all stops associated with a specific shape (direction). |
+| `/eta/{route_id}/{shape_id}/{stop_id}` | GET | `route_id`, `shape_id`, `stop_id` | Returns real-time ETA information for a specific stop on a given route. |
 
-| Endpoint | Method | Description |
-| :--- | :--- | :--- |
-| `search` | POST | Searches for routes based on a term. |
-| `routetrips/{route_id}` | GET | Returns available shapes and directions for a specific route. |
-| `shapestops/{shape_id}` | GET | Lists all stops associated with a specific shape ID. |
-| `stoptimes/shape/{shape_id}` | GET | Returns the scheduled arrival times for all stops in a shape. |
-| `stoptrips/-{route_id}` | GET | Returns real-time trip data, including vehicle positions and delays. |
+## Scraper Details
 
-### Parameters
-- `route_id`: The identifier for a bus route (e.g., `0800`, `0290`).
-- `shape_id`: The identifier for a specific direction/variation of a route (e.g., `0800-0`, `0290-1`).
+- **Base URL:** `https://onibus.info`
+- **Cookie & User-Agent Management:** Managed by the `OnibusScraper` class in `scraper.py`. If a request returns a 403 or 401 error, the scraper automatically uses Selenium in headless mode to refresh the session cookies.
+- **Data Fetching:** Primarily relies on the `requests` library for performance, only falling back to Selenium for session management.
 
 ## Real-time ETA Calculation
 
-The system calculates the real-time ETA for a specific stop using the following formula:
-
-**ETA = Scheduled Arrival Time + Trip Delay**
-
-1.  **Scheduled Arrival Time**: Obtained from the `stoptimes/shape/{shape_id}` endpoint.
-2.  **Trip Delay**: Obtained from the `stoptrips/-{route_id}` endpoint. It represents the current delay of the vehicle in seconds (can be positive for delays or negative for early arrivals).
-
-## Cookie & Header Management
-
-The `onibus.info` API requires valid session cookies and specific headers to function:
-- **Cookies**: Obtained by visiting the base website (`https://onibus.info`) using a headless browser (Selenium).
-- **User-Agent**: A standard browser User-Agent must be used.
-- **Referer**: Many API endpoints check the `Referer` header. Usually, it should point to the specific route page (e.g., `https://onibus.info/linhas/{route_id}`).
+The backend calculates the real-time ETA for a specific stop:
+- **Scheduled Arrival Time:** Fetched from `stoptimes/shape/{shape_id}`.
+- **Trip Delay:** Fetched from `stoptrips/-{route_id}`.
+- **Formula:** `ETA = Scheduled Time + Current Delay`.
 
 ## Dependencies
 
-The project relies on:
-- `requests`: For making HTTP calls to the API.
-- `selenium` & `webdriver-manager`: For automating cookie retrieval.
-- `Interactive Menu`: The `main.py` script now uses a loop-based interactive menu for user input and selection.
+- `fastapi` & `uvicorn`: Web framework and server.
+- `requests`: HTTP client for data scraping.
+- `selenium` & `webdriver-manager`: Automated session management for cookie retrieval.
+- `pydantic`: Data validation and serialization for API responses.

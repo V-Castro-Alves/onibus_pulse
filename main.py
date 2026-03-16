@@ -1,160 +1,176 @@
-import time
-import sys
+from fastapi import FastAPI, HTTPException
+from typing import List, Optional
+from pydantic import BaseModel
 from datetime import datetime, timedelta
 from scraper import OnibusScraper
 
-def list_route_trips(scraper, route_id):
-    print(f"\nFetching directions for route {route_id}...")
-    trips = scraper.get_route_trips(route_id)
-    if not trips:
-        print("No directions found for this route.")
-        return None
+app = FastAPI(title="Onibus Pulse API")
+scraper = OnibusScraper()
 
-    print("\nAvailable Directions:")
-    for i, trip in enumerate(trips):
-        print(f"[{i}] {trip['trip_headsign']} (Shape: {trip['shape_id']})")
+@app.get("/")
+def read_root():
+    return {
+        "message": "Welcome to Onibus Pulse API",
+        "docs": "/docs",
+        "status": "active"
+    }
+
+# --- Pydantic Models ---
+
+class RouteTrip(BaseModel):
+    trip_id: str
+    trip_headsign: str
+    shape_id: str
+    direction_id: int
+
+class RouteListItem(BaseModel):
+    route_id: str
+    route_long_name: str
+    station_name: str
+    service_id: List[str]
+
+class StationRoutes(BaseModel):
+    station_name: str
+    routes: List[RouteListItem]
+
+class Stop(BaseModel):
+    stop_id: str
+    stop_name: str
+    stop_order: int
+    lat: float
+    lon: float
+
+class ETAInfo(BaseModel):
+    vehicle_prefix: str
+    scheduled_arrival: str
+    delay_seconds: int
+    eta_time: str
+    remaining_minutes: int
+    status: str
+
+# --- API Endpoints ---
+
+@app.get("/routes", response_model=List[StationRoutes])
+def get_all_grouped_routes():
+    """Get all routes grouped by station."""
+    data = scraper.get_all_routes()
+    if not data:
+        raise HTTPException(status_code=500, detail="Failed to fetch routes")
+    return data
+
+@app.get("/routes/list", response_model=List[RouteListItem])
+def get_flat_routes():
+    """Get a flat, deduplicated list of all routes."""
+    data = scraper.get_all_routes()
+    if not data:
+        raise HTTPException(status_code=500, detail="Failed to fetch routes")
     
-    while True:
-        choice = input("\nSelect a direction index (or 'b' to go back, 'q' to quit): ").strip().lower()
-        if choice == 'b':
-            return None
-        if choice == 'q':
-            sys.exit(0)
-        try:
-            idx = int(choice)
-            if 0 <= idx < len(trips):
-                return trips[idx]
-            else:
-                print(f"Invalid index. Please choose between 0 and {len(trips)-1}.")
-        except ValueError:
-            print("Invalid input. Please enter a number, 'b', or 'q'.")
-
-def list_shape_stops(scraper, shape_id):
-    print(f"\nFetching stops for shape {shape_id}...")
-    stops = scraper.get_shape_stops(shape_id)
-    if not stops:
-        print("No stops found for this shape.")
-        return None
-
-    print("\nAvailable Stops:")
-    for i, stop in enumerate(stops):
-        print(f"[{i}] {stop['stop_id']}: {stop['stop_name']} (Order: {stop['stop_order']})")
+    flat_list = []
+    seen_routes = set()
     
-    while True:
-        choice = input("\nSelect a stop index (or 'b' to go back, 'q' to quit): ").strip().lower()
-        if choice == 'b':
-            return None
-        if choice == 'q':
-            sys.exit(0)
-        try:
-            idx = int(choice)
-            if 0 <= idx < len(stops):
-                return stops[idx]
-            else:
-                print(f"Invalid index. Please choose between 0 and {len(stops)-1}.")
-        except ValueError:
-            print("Invalid input. Please enter a number, 'b', or 'q'.")
-
-def track_eta(scraper, route_id, shape_id, stop_id, stop_name):
-    print(f"\nTarget Stop: {stop_name}")
+    for station in data:
+        for route in station['routes']:
+            if route['route_id'] not in seen_routes:
+                flat_list.append(route)
+                seen_routes.add(route['route_id'])
     
-    # Get scheduled stop times
-    print("Fetching scheduled stop times...")
-    stop_times = scraper.get_stop_times(shape_id)
-    if not stop_times:
-        print("Could not fetch scheduled stop times.")
-        return
-    
-    target_stop_times = next((s for s in stop_times if s['stop_id'] == stop_id), None)
-    if not target_stop_times:
-        print(f"No schedule found for stop {stop_id}.")
-        return
+    return sorted(flat_list, key=lambda x: x['route_id'])
 
-    print("\nStarting real-time tracking (Ctrl+C to stop and return to menu)...")
-    try:
-        while True:
-            realtime_data = scraper.get_realtime_trips(route_id)
-            if not realtime_data:
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] Could not fetch real-time data. Retrying in 10s...")
-                time.sleep(10)
-                continue
-            
-            # Filter vehicles for this shape
-            vehicles = [v for v in realtime_data if v.get('shape_id') == shape_id and v.get('trip_status') == 'LIVE']
-            
-            if not vehicles:
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] No live vehicles found for this shape.")
-            else:
-                print(f"\n--- Update at {datetime.now().strftime('%H:%M:%S')} ---")
-                found_eta = False
-                for v in vehicles:
-                    trip_id = v['trip_id']
-                    delay = v['trip_delay']  # in seconds
-                    
-                    # Find scheduled time for this specific trip
-                    sched_time_str = next((t['arrival_time'] for t in target_stop_times['times'] if t['trip_id'] == trip_id), None)
-                    
-                    if sched_time_str:
-                        found_eta = True
-                        # Parse scheduled time
-                        sched_time = datetime.strptime(sched_time_str, "%H:%M:%S")
-                        now = datetime.now()
-                        sched_dt = now.replace(hour=sched_time.hour, minute=sched_time.minute, second=sched_time.second)
-                        
-                        # Handle midnight crossing
-                        if sched_dt < now - timedelta(hours=12):
-                            sched_dt += timedelta(days=1)
-                        
-                        eta_dt = sched_dt + timedelta(seconds=delay)
-                        remaining = (eta_dt - now).total_seconds()
-                        
-                        status = "Arrived" if remaining < 0 else f"{int(remaining // 60)}m {int(remaining % 60)}s"
-                        
-                        print(f"Vehicle {v['vehicle_prefix']}:")
-                        print(f"  Scheduled: {sched_time_str}")
-                        print(f"  Delay: {delay}s ({delay//60}m {delay%60}s)")
-                        print(f"  ETA: {eta_dt.strftime('%H:%M:%S')} ({status} remaining)")
+@app.get("/routes/{route_id}", response_model=List[RouteTrip])
+def get_routes(route_id: str):
+    """Get available directions (shapes) for a specific route."""
+    data = scraper.get_route_trips(route_id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Route not found")
+    
+    return [
+        RouteTrip(
+            trip_id=t['trip_id'],
+            trip_headsign=t['trip_headsign'],
+            shape_id=t['shape_id'],
+            direction_id=t['direction_id']
+        ) for t in data
+    ]
+
+@app.get("/stops/{shape_id}", response_model=List[Stop])
+def get_stops(shape_id: str):
+    """List all stops for a specific direction (shape)."""
+    data = scraper.get_shape_stops(shape_id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Shape not found")
+    
+    return [
+        Stop(
+            stop_id=s['stop_id'],
+            stop_name=s['stop_name'],
+            stop_order=s['stop_order'],
+            lat=s['stop_lat'],
+            lon=s['stop_lon']
+        ) for s in data
+    ]
+
+@app.get("/eta/{route_id}/{shape_id}/{stop_id}", response_model=List[ETAInfo])
+def get_eta(route_id: str, shape_id: str, stop_id: str):
+    """Get real-time ETA for a specific stop."""
+    # 1. Get scheduled times for this stop
+    stop_times_data = scraper.get_stop_times(shape_id)
+    if not stop_times_data:
+        raise HTTPException(status_code=404, detail="Scheduled times not found for this shape")
+    
+    target_stop = next((s for s in stop_times_data if s['stop_id'] == stop_id), None)
+    if not target_stop:
+        raise HTTPException(status_code=404, detail="Stop not found in this shape")
+
+    # 2. Get real-time trip data
+    realtime_data = scraper.get_realtime_trips(route_id)
+    if not realtime_data:
+        # If no real-time data, we can't calculate ETA (upstream might be down or no buses)
+        return []
+    
+    # 3. Filter vehicles for this shape
+    vehicles = [v for v in realtime_data if v.get('shape_id') == shape_id and v.get('trip_status') == 'LIVE']
+    
+    results = []
+    now = datetime.now()
+    
+    for v in vehicles:
+        trip_id = v['trip_id']
+        delay = v['trip_delay']  # in seconds
+        
+        # Find scheduled time for this specific trip
+        sched_time_str = next((t['arrival_time'] for t in target_stop['times'] if t['trip_id'] == trip_id), None)
+        
+        if sched_time_str:
+            # Parse scheduled time
+            try:
+                sched_time = datetime.strptime(sched_time_str, "%H:%M:%S")
+                sched_dt = now.replace(hour=sched_time.hour, minute=sched_time.minute, second=sched_time.second)
                 
-                if not found_eta:
-                    print("No vehicle's current trip matches the schedule for this stop.")
-            
-            time.sleep(15)
-    except KeyboardInterrupt:
-        print("\nTracking stopped. Returning to menu...")
-
-def main_loop():
-    print("Welcome to Onibus Pulse - Real-time Bus Tracking")
-    scraper = OnibusScraper()
-
-    while True:
-        route_id = input("\nEnter Route ID (e.g., 0800) or 'q' to quit: ").strip().lower()
-        if route_id == 'q':
-            break
-        if not route_id:
-            continue
-        
-        # Step 1: Select Direction
-        selected_trip = list_route_trips(scraper, route_id)
-        if not selected_trip:
-            continue
-        
-        shape_id = selected_trip['shape_id']
-        
-        # Step 2: Select Stop
-        selected_stop = list_shape_stops(scraper, shape_id)
-        if not selected_stop:
-            continue
-        
-        stop_id = selected_stop['stop_id']
-        stop_name = selected_stop['stop_name']
-        
-        # Step 3: Track
-        track_eta(scraper, route_id, shape_id, stop_id, stop_name)
+                # Handle midnight crossing
+                if sched_dt < now - timedelta(hours=12):
+                    sched_dt += timedelta(days=1)
+                elif sched_dt > now + timedelta(hours=12):
+                    sched_dt -= timedelta(days=1)
+                
+                eta_dt = sched_dt + timedelta(seconds=delay)
+                remaining_seconds = (eta_dt - now).total_seconds()
+                
+                status = "Arrived" if remaining_seconds < 0 else f"{int(remaining_seconds // 60)}m"
+                
+                results.append(ETAInfo(
+                    vehicle_prefix=v['vehicle_prefix'],
+                    scheduled_arrival=sched_time_str,
+                    delay_seconds=delay,
+                    eta_time=eta_dt.strftime("%H:%M:%S"),
+                    remaining_minutes=int(max(0, remaining_seconds // 60)),
+                    status=status
+                ))
+            except Exception as e:
+                print(f"Error parsing time: {e}")
+                continue
+    
+    return results
 
 if __name__ == "__main__":
-    try:
-        main_loop()
-    except EOFError:
-        print("\nExiting...")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

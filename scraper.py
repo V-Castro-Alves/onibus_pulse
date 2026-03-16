@@ -87,3 +87,7 @@ class OnibusScraper:
     def get_realtime_trips(self, route_id):
         # The endpoint is /api/stoptrips/-{route_id}
         return self.make_request(f"stoptrips/-{route_id}", referer=f"{self.BASE_URL}/linhas/{route_id}")
+
+    def get_all_routes(self):
+        """Fetch all routes grouped by station."""
+        return self.make_request("routes/group", referer=f"{self.BASE_URL}/linhas")

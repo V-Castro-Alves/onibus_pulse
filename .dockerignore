@@ -1,0 +1,15 @@
+venv
+__pycache__
+.git
+.gitignore
+.env
+.pytest_cache
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.DS_Store
+har-files
+onibus.info.har
+route-onibus.info.har

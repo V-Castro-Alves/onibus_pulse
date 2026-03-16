@@ -1,134 +1,75 @@
-# 🚏 Onibus Pulse
+# 🚏 Onibus Pulse - Backend
 
-A clean, web-based notification wrapper for onibus.info.
+A FastAPI-based backend that scrapes `onibus.info` to provide a clean REST API for real-time bus tracking.
 
-Onibus Pulse actively monitors selected bus routes and stops and sends browser push notifications when your bus is approaching — so you never have to manually refresh the tracking page again.
-
----
-
-## ✨ Why This Exists
-
-The original website — https://onibus.info — is passive.  
-Users must manually refresh the page to see updated ETAs.
-
-Onibus Pulse transforms that experience into:
-
-- Active monitoring
-- Background polling
-- Smart alerts
-- Clean dashboard experience
-- Browser notifications
+This project serves as the data engine for the **Onibus Pulse** ecosystem, with a separate Flutter frontend in another repository.
 
 ---
 
-## 🎯 Core Features (MVP)
+## 🏗 Architecture
 
-### 🌐 Web-Only Application
-- Works in desktop and mobile browsers
-- No installation required
-- No native app
-- No authentication (anonymous usage)
-
-### 🚌 Route & Stop Monitoring
-- Select one or more bus routes
-- Select one or more stops per route
-- Monitor multiple alerts simultaneously
-
-### 🔔 Smart Alerts
-- Notify when ETA is below X minutes
-- One-time alerts
-- Recurring alerts
-- Background polling
-
-Example notification:
-
-> “Bus 512 arriving in 4 minutes”
-
-### 📊 Clean Dashboard
-- Watched routes and stops
-- Current ETA
-- Alert status (Armed / Triggered / Paused)
-- Add, edit, pause, or remove alerts easily
-- Polished typography and spacing
+- **Backend:** FastAPI (Python) - *This Repository*
+- **Frontend:** Flutter (Mobile/Web/Desktop) - *Separate Repository*
+- **Data Source:** Scraped from `onibus.info` (with Cloudflare bypass via Selenium).
 
 ---
 
-## 🧠 How It Works
+## ✨ Features (MVP)
 
-There is **no public API** available.
-
-Data is retrieved by:
-
-- Observing network requests used by the original site  
-  **OR**
-- Scraping structured HTML responses
-
-To ensure reliability:
-
-- Rate limiting is implemented
-- Request caching reduces unnecessary load
-- Graceful failure handling if layout changes
-- Defensive parsing strategies
-
-Reliability is prioritized over aggressive scraping.
+- **Route Discovery:** Search for bus routes by ID or name.
+- **Stop Listing:** Get all stops for a specific route and direction (shape).
+- **Real-time ETA:** Calculate accurate bus arrival times by combining scheduled times with live trip delays.
+- **Cookie Bypass:** Automatic session/cookie refresh using Selenium when needed.
 
 ---
 
-## 🏗 Architecture Principles
+## 🛠 Tech Stack
 
-- Maintainable and modular code
-- Clear separation between:
-  - Data fetch layer
-  - Alert engine
-  - UI layer
-- Easily extensible for:
-  - Mobile app
-  - Real-time updates
-  - Lock screen notifications
-  - Public API layer
+- **FastAPI:** Modern, high-performance web framework.
+- **Requests:** For standard API communication.
+- **Selenium:** To handle Cloudflare challenges and refresh session cookies.
+- **Uvicorn:** ASGI server for development and production.
 
 ---
 
-## 🚦 User Flow
+## 🚀 Getting Started
 
-1. User selects one or more routes
-2. User selects stops per route
-3. User defines alert rule:
-   - Notify when ETA < X minutes
-   - One-time or recurring
-4. App polls ETA periodically
-5. When conditions are met:
-   - Browser push notification is sent
+### Prerequisites
 
----
+- Python 3.10+
+- Google Chrome (for Selenium cookie refresh)
 
-## 🔐 Notifications
+### Installation
 
-Uses the standard Web Notification API.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/vitor/onibus_pulse.git
+   cd onibus_pulse
+   ```
 
-- Requires browser permission
-- Simple alert messages
-- No background service workers beyond polling needs (MVP scope)
+2. Create a virtual environment and install dependencies:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # or venv\Scripts\activate on Windows
+   pip install -r requirements.txt
+   ```
 
----
+3. Run the API:
+   ```bash
+   uvicorn main:app --reload
+   ```
 
-## 🧩 Future Ideas
+### API Endpoints (Planned/Current)
 
-- Service Worker for smarter background sync
-- Progressive Web App (PWA)
-- Real-time WebSocket support (if available)
-- Push server for cross-device notifications
-- Saved presets
-- Dark mode
-- Multi-city support
+- `GET /routes/{route_id}`: Get available directions for a route.
+- `GET /stops/{shape_id}`: List all stops for a specific direction.
+- `GET /eta/{route_id}/{shape_id}/{stop_id}`: Get real-time ETA for a specific stop.
 
 ---
 
 ## ⚠ Disclaimer
 
-This project is an independent wrapper built around publicly accessible data from https://onibus.info.
-
-It is not affiliated with or endorsed by the original service.
+This project is an independent wrapper built around publicly accessible data from https://onibus.info. It is not affiliated with or endorsed by the original service.
 
 ---
 
