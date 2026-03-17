@@ -1,15 +1,13 @@
-# 🚏 Onibus Pulse - Backend
+# 🚏 Onibus Pulse
 
-A FastAPI-based backend that scrapes `onibus.info` to provide a clean REST API for real-time bus tracking.
-
-This project serves as the data engine for the **Onibus Pulse** ecosystem, with a separate Flutter frontend in another repository.
+A monorepo for the **Onibus Pulse** project, featuring a FastAPI-based backend that scrapes `onibus.info` and a Flutter-based mobile application.
 
 ---
 
 ## 🏗 Architecture
 
-- **Backend:** FastAPI (Python) - *This Repository*
-- **Frontend:** Flutter (Mobile/Web/Desktop) - *Separate Repository*
+- **Backend (`/backend`):** FastAPI (Python) - The data engine that provides a clean REST API.
+- **Frontend (`/frontend`):** Flutter (Mobile/Web/Desktop) - The user interface for real-time bus tracking.
 - **Data Source:** Scraped from `onibus.info` (with Cloudflare bypass via Selenium).
 
 ---
@@ -19,16 +17,20 @@ This project serves as the data engine for the **Onibus Pulse** ecosystem, with 
 - **Route Discovery:** Search for bus routes by ID or name.
 - **Stop Listing:** Get all stops for a specific route and direction (shape).
 - **Real-time ETA:** Calculate accurate bus arrival times by combining scheduled times with live trip delays.
-- **Cookie Bypass:** Automatic session/cookie refresh using Selenium when needed.
+- **Cross-Platform:** Mobile application built with Flutter.
 
 ---
 
 ## 🛠 Tech Stack
 
+### Backend
 - **FastAPI:** Modern, high-performance web framework.
 - **Requests:** For standard API communication.
 - **Selenium:** To handle Cloudflare challenges and refresh session cookies.
 - **Uvicorn:** ASGI server for development and production.
+
+### Frontend
+- **Flutter:** UI toolkit for building natively compiled applications.
 
 ---
 
@@ -37,33 +39,47 @@ This project serves as the data engine for the **Onibus Pulse** ecosystem, with 
 ### Prerequisites
 
 - Python 3.10+
-- Google Chrome (for Selenium cookie refresh)
+- Flutter SDK
+- Docker & Docker Compose (optional, for containerized execution)
 
-### Installation
+### Installation & Development
 
-1. Clone the repository:
+#### Backend
+1. Navigate to the backend directory:
    ```bash
-   git clone https://github.com/vitor/onibus_pulse.git
-   cd onibus_pulse
+   cd backend
    ```
-
 2. Create a virtual environment and install dependencies:
    ```bash
    python -m venv venv
    source venv/bin/activate  # or venv\Scripts\activate on Windows
    pip install -r requirements.txt
    ```
-
 3. Run the API:
    ```bash
    uvicorn main:app --reload
    ```
 
-### API Endpoints (Planned/Current)
+#### Frontend
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+3. Run the app:
+   ```bash
+   flutter run
+   ```
 
-- `GET /routes/{route_id}`: Get available directions for a route.
-- `GET /stops/{shape_id}`: List all stops for a specific direction.
-- `GET /eta/{route_id}/{shape_id}/{stop_id}`: Get real-time ETA for a specific stop.
+### Running with Docker
+
+From the root directory:
+```bash
+docker-compose up --build
+```
 
 ---
 
