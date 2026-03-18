@@ -6,8 +6,8 @@ A monorepo for the **Onibus Pulse** project, featuring a FastAPI-based backend t
 
 ## 🏗 Architecture
 
-- **Backend (`/backend`):** FastAPI (Python) - The data engine that provides a clean REST API.
-- **Frontend (`/frontend`):** Flutter (Mobile/Web/Desktop) - The user interface for real-time bus tracking.
+- **Backend (`/onibus_pulse_backend`):** FastAPI (Python) - The data engine that provides a clean REST API.
+- **Frontend (`/onibus_pulse_frontend`):** Flutter (Mobile/Web/Desktop) - The user interface for real-time bus tracking.
 - **Data Source:** Scraped from `onibus.info` (with Cloudflare bypass via Selenium).
 
 ---
@@ -47,7 +47,7 @@ A monorepo for the **Onibus Pulse** project, featuring a FastAPI-based backend t
 #### Backend
 1. Navigate to the backend directory:
    ```bash
-   cd backend
+   cd onibus_pulse_backend
    ```
 2. Create a virtual environment and install dependencies:
    ```bash
@@ -63,7 +63,7 @@ A monorepo for the **Onibus Pulse** project, featuring a FastAPI-based backend t
 #### Frontend
 1. Navigate to the frontend directory:
    ```bash
-   cd frontend
+   cd onibus_pulse_frontend
    ```
 2. Install dependencies:
    ```bash

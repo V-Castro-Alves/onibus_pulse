@@ -1,21 +1,21 @@
 services:
   backend:
     build:
-      context: ./backend
+      context: ./onibus_pulse_backend
     container_name: onibus_pulse_backend
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - ./onibus_pulse_backend:/app
     environment:
       - PYTHONUNBUFFERED=1
     restart: always
 
   # Placeholder for frontend
   # frontend:
-  #   build: ./frontend
+  #   build: ./onibus_pulse_frontend
   #   container_name: onibus_pulse_frontend
   #   ports:
   #     - "8080:8080"
   #   volumes:
-  #     - ./frontend:/app
+  #     - ./onibus_pulse_frontend:/app

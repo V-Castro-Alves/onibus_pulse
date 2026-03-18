@@ -3,7 +3,18 @@ import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
+
+def get_driver():
+    options = Options()
+    options.binary_location = "/usr/bin/chromium" # Path for Chromium
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
+    # Chromium-driver is installed to /usr/bin/chromedriver by apt
+    service = Service("/usr/bin/chromedriver")
+    
+    return webdriver.Chrome(service=service, options=options)
 
 class OnibusScraper:
     BASE_URL = "https://onibus.info"
@@ -16,13 +27,7 @@ class OnibusScraper:
 
     def refresh_cookies(self):
         print("Refreshing cookies via Selenium...")
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        driver = get_driver()
         
         try:
             driver.get(self.BASE_URL)

@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException
-from typing import List, Optional
+from typing import List
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 from scraper import OnibusScraper
 
 app = FastAPI(title="Onibus Pulse API")
-scraper = OnibusScraper()
+onibus_scraper = OnibusScraper()
 
 @app.get("/")
 def read_root():
@@ -18,7 +18,6 @@ def read_root():
 # --- Pydantic Models ---
 
 class RouteTrip(BaseModel):
-    trip_id: str
     trip_headsign: str
     shape_id: str
     direction_id: int
@@ -53,7 +52,7 @@ class ETAInfo(BaseModel):
 @app.get("/routes", response_model=List[StationRoutes])
 def get_all_grouped_routes():
     """Get all routes grouped by station."""
-    data = scraper.get_all_routes()
+    data = onibus_scraper.get_all_routes()
     if not data:
         raise HTTPException(status_code=500, detail="Failed to fetch routes")
     return data
@@ -61,7 +60,7 @@ def get_all_grouped_routes():
 @app.get("/routes/list", response_model=List[RouteListItem])
 def get_flat_routes():
     """Get a flat, deduplicated list of all routes."""
-    data = scraper.get_all_routes()
+    data = onibus_scraper.get_all_routes()
     if not data:
         raise HTTPException(status_code=500, detail="Failed to fetch routes")
     
@@ -79,13 +78,12 @@ def get_flat_routes():
 @app.get("/routes/{route_id}", response_model=List[RouteTrip])
 def get_routes(route_id: str):
     """Get available directions (shapes) for a specific route."""
-    data = scraper.get_route_trips(route_id)
+    data = onibus_scraper.get_route_trips(route_id)
     if not data:
         raise HTTPException(status_code=404, detail="Route not found")
     
     return [
         RouteTrip(
-            trip_id=t['trip_id'],
             trip_headsign=t['trip_headsign'],
             shape_id=t['shape_id'],
             direction_id=t['direction_id']
@@ -95,7 +93,7 @@ def get_routes(route_id: str):
 @app.get("/stops/{shape_id}", response_model=List[Stop])
 def get_stops(shape_id: str):
     """List all stops for a specific direction (shape)."""
-    data = scraper.get_shape_stops(shape_id)
+    data = onibus_scraper.get_shape_stops(shape_id)
     if not data:
         raise HTTPException(status_code=404, detail="Shape not found")
     
@@ -113,7 +111,7 @@ def get_stops(shape_id: str):
 def get_eta(route_id: str, shape_id: str, stop_id: str):
     """Get real-time ETA for a specific stop."""
     # 1. Get scheduled times for this stop
-    stop_times_data = scraper.get_stop_times(shape_id)
+    stop_times_data = onibus_scraper.get_stop_times(shape_id)
     if not stop_times_data:
         raise HTTPException(status_code=404, detail="Scheduled times not found for this shape")
     
@@ -122,7 +120,7 @@ def get_eta(route_id: str, shape_id: str, stop_id: str):
         raise HTTPException(status_code=404, detail="Stop not found in this shape")
 
     # 2. Get real-time trip data
-    realtime_data = scraper.get_realtime_trips(route_id)
+    realtime_data = onibus_scraper.get_realtime_trips(route_id)
     if not realtime_data:
         # If no real-time data, we can't calculate ETA (upstream might be down or no buses)
         return []
