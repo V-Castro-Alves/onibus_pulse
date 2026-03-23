@@ -1,11 +1,11 @@
 # Onibus Pulse - System Documentation (Backend)
 
-The **Onibus Pulse Backend** is a FastAPI-based service designed to provide real-time bus tracking data for the **Onibus Pulse** Flutter application.
+The **Onibus Pulse Backend** is a FastAPI-based service designed to provide real-time bus tracking data for the **Onibus Pulse** application.
 
 ## System Architecture
 
 The backend consists of:
-1.  **FastAPI Application (`main.py`)**: Exposes REST endpoints for the Flutter frontend.
+1.  **FastAPI Application (`main.py`)**: Exposes REST endpoints for the frontend.
 2.  **Scraper (`scraper.py`)**: Handles communication with `onibus.info`. Uses Selenium for session cookie acquisition to bypass Cloudflare protection.
 3.  **Real-time ETA Logic**: Dynamically calculates the Estimated Time of Arrival (ETA) by merging scheduled arrival data with real-time trip delays.
 

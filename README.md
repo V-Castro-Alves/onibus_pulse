@@ -1,94 +1,77 @@
-# 🚏 Onibus Pulse
+# Onibus Pulse
 
-A monorepo for the **Onibus Pulse** project, featuring a FastAPI-based backend that scrapes `onibus.info` and a Flutter-based mobile application.
+Bringing the heartbeat of the city to your pocket.
 
----
+Onibus Pulse is a high-performance, cross-platform transit tracker designed to eliminate "bus stop anxiety." By transforming raw data from onibus.info into a sleek, real-time dashboard, it helps commuters make informed decisions: Should I run for the bus, or grab a coffee?
 
-## 🏗 Architecture
+## 🎯 User-First Features
 
-- **Backend (`/onibus_pulse_backend`):** FastAPI (Python) - The data engine that provides a clean REST API.
-- **Frontend (`/onibus_pulse_frontend`):** Flutter (Mobile/Web/Desktop) - The user interface for real-time bus tracking.
-- **Data Source:** Scraped from `onibus.info` (with Cloudflare bypass via Selenium).
+### ⚡ Pulse Dashboard (MVP)
 
----
-
-## ✨ Features (MVP)
-
-- **Route Discovery:** Search for bus routes by ID or name.
-- **Stop Listing:** Get all stops for a specific route and direction (shape).
-- **Real-time ETA:** Calculate accurate bus arrival times by combining scheduled times with live trip delays.
-- **Cross-Platform:** Mobile application built with Flutter.
-
----
+- One-Tap Favorites: Instantly view your most-used lines and their proximity on app launch.
+- Live ETA Engine: A smart countdown timer that merges scheduled arrival times with real-time scraped delays.
+- Proximity Discovery: Uses device location to find nearby stops and active lines within walking distance.
+- Visual Route Mapping: Track the live "Pulse" of buses on an interactive map with shape-accurate paths.
 
 ## 🛠 Tech Stack
 
-### Backend
-- **FastAPI:** Modern, high-performance web framework.
-- **Requests:** For standard API communication.
-- **Selenium:** To handle Cloudflare challenges and refresh session cookies.
-- **Uvicorn:** ASGI server for development and production.
+- **Frontend**: (Planned/In-progress)
+- **Backend**: FastAPI (Python)
+- **Scraping/Engine**: Selenium + requests + BeautifulSoup (for Cloudflare bypass and parsing)
+- **Persistence**: Optional local caching (offline mode intent)
 
-### Frontend
-- **Flutter:** UI toolkit for building natively compiled applications.
+## 🏗 Monorepo System Architecture
 
----
+- `onibus_pulse_backend/`
+  - `main.py`: FastAPI entrypoint with Pydantic models and endpoints.
+  - `scraper.py`: `OnibusScraper` class for web scraping and transformation.
+  - `examples/`: sample data and HAR traces.
+- `onibus_pulse_frontend/`
+  - `lib/`: contains frontend source code.
 
-## 🚀 Getting Started
+## 📲 Runtime app flow
+
+1. Frontend calls `GET /routes/list` to load available routes.
+2. User selects a route to see `GET /routes/{route_id}` data (direction/trips).
+3. Selects trip shape to load stops from `GET /stops/{shape_id}`.
+4. Select stop, then load ETA with `GET /eta/{route_id}/{shape_id}/{stop_id}`.
+5. Refresh mechanism every 5 minutes and supports pull-to-refresh.
+
+## ▶️ Quick Start (Local)
 
 ### Prerequisites
 
 - Python 3.10+
-- Flutter SDK
-- Docker & Docker Compose (optional, for containerized execution)
+- Chrome + chromedriver (for scraper path)
 
-### Installation & Development
+### Backend
 
-#### Backend
-1. Navigate to the backend directory:
-   ```bash
-   cd onibus_pulse_backend
-   ```
-2. Create a virtual environment and install dependencies:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # or venv\Scripts\activate on Windows
-   pip install -r requirements.txt
-   ```
-3. Run the API:
-   ```bash
-   uvicorn main:app --reload
-   ```
-
-#### Frontend
-1. Navigate to the frontend directory:
-   ```bash
-   cd onibus_pulse_frontend
-   ```
-2. Install dependencies:
-   ```bash
-   flutter pub get
-   ```
-3. Run the app:
-   ```bash
-   flutter run
-   ```
-
-### Running with Docker
-
-From the root directory:
 ```bash
-docker-compose up --build
+cd onibus_pulse_backend
+pip install -r requirements.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
----
+### Frontend
 
-## ⚠ Disclaimer
+```bash
+cd onibus_pulse_frontend
+```
 
-This project is an independent wrapper built around publicly accessible data from https://onibus.info. It is not affiliated with or endorsed by the original service.
+### API Host Notes
 
----
+- Android emulator: `http://10.0.2.2:8000`
+- iOS simulator / desktop: `http://localhost:8000`
 
-## 📜 License
+## 🧩 Planned Enhancements
 
-MIT License
+- Crowdsourced accuracy feedback buttons
+- Multi-route watch mode
+- Low-data text mode with minimal UI
+- Favorites and offline caches
+- Map and geofencing trip alerts
+
+## 📜 License & DISCLAIMER
+
+- MIT License
+- Not affiliated with or endorsed by onibus.info. Data is provided "as-is".
