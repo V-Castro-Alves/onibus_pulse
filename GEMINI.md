@@ -40,7 +40,25 @@ The application follows a logical flow, with each user interaction triggering a 
 4.  **Select a Stop (`EtaScreen.tsx`):** Finally, selecting a stop triggers a call to `GET /eta/{route_id}/{shape_id}/{stop_id}` to fetch live arrival time data for that stop.
 5.  **Live Updates (`EtaScreen.tsx`):** The ETA screen automatically polls the API every **30 seconds** for fresh data. It also provides a manual refresh button.
 
-## 🛠️ Development Guidelines & Implementation Details
+## 🧪 Testing & Quality Assurance
+
+The backend includes a comprehensive suite of tests and quality checks (Ruff, Bandit, Pip-audit, Pytest) that run inside a specialized Docker container.
+
+### 🐳 Running Backend Tests
+To verify your changes, run the full test suite from the project root:
+```bash
+docker compose -f docker-compose.test.yml up --build --exit-code-from test
+```
+-   **Ruff:** Checks for code style and formatting issues.
+-   **Bandit:** Performs a security audit on the Python source code.
+-   **Pip-audit:** Scans dependencies for known vulnerabilities.
+-   **Pytest:** Executes the API endpoint tests in `onibus_pulse_backend/tests/`.
+
+### 🛠️ Development Guidelines & Implementation Details
+
+-   **Test-Driven Development:** **Always create new tests** when implementing new features or fixing bugs to ensure long-term stability.
+-   **Regression Testing:** **Never remove or edit existing tests** unless the underlying business logic has fundamentally changed; instead, add new test cases to cover new scenarios.
+-   **Mandatory Verification:** You **must** run the full test suite (`docker compose -f docker-compose.test.yml ...`) after every new implementation or modification to ensure no regressions were introduced.
 
 ### Backend (FastAPI)
 

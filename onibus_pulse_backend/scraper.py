@@ -4,17 +4,19 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
+
 def get_driver():
     options = Options()
-    options.binary_location = "/usr/bin/chromium" # Path for Chromium
+    options.binary_location = "/usr/bin/chromium"  # Path for Chromium
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    
+
     # Chromium-driver is installed to /usr/bin/chromedriver by apt
     service = Service("/usr/bin/chromedriver")
-    
+
     return webdriver.Chrome(service=service, options=options)
+
 
 class OnibusScraper:
     BASE_URL = "https://onibus.info"
@@ -28,30 +30,34 @@ class OnibusScraper:
     def refresh_cookies(self):
         print("Refreshing cookies via Selenium...")
         driver = get_driver()
-        
+
         try:
             driver.get(self.BASE_URL)
             time.sleep(5)  # Wait for page to load/CF challenge
             cookies = driver.get_cookies()
             driver.quit()
-            
-            self.cookie_string = "; ".join([f"{cookie['name']}={cookie['value']}" for cookie in cookies])
-            self.session.headers.update({
-                "cookie": self.cookie_string,
-                "user-agent": self.user_agent,
-                "accept": "application/json, text/plain, */*"
-            })
+
+            self.cookie_string = "; ".join(
+                [f"{cookie['name']}={cookie['value']}" for cookie in cookies]
+            )
+            self.session.headers.update(
+                {
+                    "cookie": self.cookie_string,
+                    "user-agent": self.user_agent,
+                    "accept": "application/json, text/plain, */*",
+                }
+            )
             return True
         except Exception as e:
             print(f"Error refreshing cookies: {e}")
-            if 'driver' in locals():
+            if "driver" in locals():
                 driver.quit()
             return False
 
     def _get_headers(self, referer=None):
         headers = {
             "accept": "application/json, text/plain, */*",
-            "user-agent": self.user_agent
+            "user-agent": self.user_agent,
         }
         if self.cookie_string:
             headers["cookie"] = self.cookie_string
@@ -71,7 +77,7 @@ class OnibusScraper:
                 if self.refresh_cookies():
                     headers = self._get_headers(referer)
                     response = self.session.get(url, headers=headers)
-            
+
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
@@ -79,7 +85,9 @@ class OnibusScraper:
             return None
 
     def get_route_trips(self, route_id):
-        return self.make_request(f"routetrips/{route_id}", referer=f"{self.BASE_URL}/linhas/{route_id}")
+        return self.make_request(
+            f"routetrips/{route_id}", referer=f"{self.BASE_URL}/linhas/{route_id}"
+        )
 
     def get_shape_stops(self, shape_id):
         return self.make_request(f"shapestops/{shape_id}")
@@ -91,7 +99,9 @@ class OnibusScraper:
 
     def get_realtime_trips(self, route_id):
         # The endpoint is /api/stoptrips/-{route_id}
-        return self.make_request(f"stoptrips/-{route_id}", referer=f"{self.BASE_URL}/linhas/{route_id}")
+        return self.make_request(
+            f"stoptrips/-{route_id}", referer=f"{self.BASE_URL}/linhas/{route_id}"
+        )
 
     def get_all_routes(self):
         """Fetch all routes grouped by station."""

@@ -1,0 +1,25 @@
+name: Backend Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'onibus_pulse_backend/**'
+      - '.github/workflows/backend-tests.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'onibus_pulse_backend/**'
+      - '.github/workflows/backend-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run checks and tests via Docker Compose
+        run: docker compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from test test
