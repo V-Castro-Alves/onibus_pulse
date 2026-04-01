@@ -1,77 +1,71 @@
-# Onibus Pulse
+# 🚌 Onibus Pulse
 
-Bringing the heartbeat of the city to your pocket.
+> Bringing the heartbeat of the city to your pocket.
 
-Onibus Pulse is a high-performance, cross-platform transit tracker designed to eliminate "bus stop anxiety." By transforming raw data from onibus.info into a sleek, real-time dashboard, it helps commuters make informed decisions: Should I run for the bus, or grab a coffee?
+**Onibus Pulse** is a high-performance, cross-platform transit tracker built to eliminate *bus stop anxiety*. It transforms raw data from [onibus.info](https://onibus.info) into a sleek, real-time dashboard — so you can answer the only question that matters: *should I run, or grab a coffee?*
 
-## 🎯 User-First Features
+---
 
-### ⚡ Pulse Dashboard (MVP)
+## ✨ Features
 
-- One-Tap Favorites: Instantly view your most-used lines and their proximity on app launch.
-- Live ETA Engine: A smart countdown timer that merges scheduled arrival times with real-time scraped delays.
-- Proximity Discovery: Uses device location to find nearby stops and active lines within walking distance.
-- Visual Route Mapping: Track the live "Pulse" of buses on an interactive map with shape-accurate paths.
+| Feature | Description |
+|---|---|
+| ⚡ **Live ETA Engine** | Countdown timers merging scheduled arrivals with real-time scraped delays |
+| ⭐ **One-Tap Favorites** | Instantly surface your most-used lines on launch |
+| 📍 **Proximity Discovery** | Finds nearby stops and active lines within walking distance |
+| 🗺️ **Visual Route Mapping** | Track buses live on an interactive map with shape-accurate paths |
 
-## 🛠 Tech Stack
+---
 
-- **Frontend**: (Planned/In-progress)
-- **Backend**: FastAPI (Python)
-- **Scraping/Engine**: Selenium + requests + BeautifulSoup (for Cloudflare bypass and parsing)
-- **Persistence**: Optional local caching (offline mode intent)
+## 🛠️ Tech Stack
 
-## 🏗 Monorepo System Architecture
+| Layer | Technology |
+|---|---|
+| **Frontend** | React + Vite (TypeScript), Capacitor *(planned)* |
+| **Backend** | FastAPI (Python) |
+| **Scraping** | Selenium + Requests + BeautifulSoup |
+| **Persistence** | Local caching for offline mode *(planned)* |
 
-- `onibus_pulse_backend/`
-  - `main.py`: FastAPI entrypoint with Pydantic models and endpoints.
-  - `scraper.py`: `OnibusScraper` class for web scraping and transformation.
-  - `examples/`: sample data and HAR traces.
-- `onibus_pulse_frontend/`
-  - `lib/`: contains frontend source code.
+---
 
-## 📲 Runtime app flow
+## 🏗️ Project Structure
 
-1. Frontend calls `GET /routes/list` to load available routes.
-2. User selects a route to see `GET /routes/{route_id}` data (direction/trips).
-3. Selects trip shape to load stops from `GET /stops/{shape_id}`.
-4. Select stop, then load ETA with `GET /eta/{route_id}/{shape_id}/{stop_id}`.
-5. Refresh mechanism every 5 minutes and supports pull-to-refresh.
-
-## ▶️ Quick Start (Local)
-
-### Prerequisites
-
-- Python 3.10+
-- Chrome + chromedriver (for scraper path)
-
-### Backend
-
-```bash
-cd onibus_pulse_backend
-pip install -r requirements.txt
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+onibus-pulse/
+├── onibus_pulse_backend/
+│   ├── main.py          # FastAPI entrypoint (routes, Pydantic models)
+│   ├── scraper.py       # OnibusScraper class (scraping + transformation)
+│   └── examples/        # Sample data and HAR traces
+└── onibus_pulse_frontend/
+    ├── src/             # React components, screens, assets
+    └── public/          # Static assets
 ```
 
-### Frontend
+---
 
-```bash
-cd onibus_pulse_frontend
+## 📲 App Flow
+
+```
+GET /routes/list
+  → user picks a route
+GET /routes/{route_id}
+  → user picks a direction/trip
+GET /stops/{shape_id}
+  → user picks a stop
+GET /eta/{route_id}/{shape_id}/{stop_id}
+  → live ETA shown, auto-refreshes every 5 min
 ```
 
-### API Host Notes
+---
 
-- Android emulator: `http://10.0.2.2:8000`
-- iOS simulator / desktop: `http://localhost:8000`
+## ▶️ Quick Start
 
-## 🧩 Planned Enhancements
+### 🐳 Using Docker (Recommended)
 
-- Crowdsourced accuracy feedback buttons
-- Multi-route watch mode
-- Low-data text mode with minimal UI
-- Favorites and offline caches
-- Map and geofencing trip alerts
+```bash
+docker-compose up --build
+```
 
-## 📜 License & DISCLAIMER
+- **Backend:** [http://localhost:8000](http://localhost:8000)
+- **Frontend:** [http://localhost:80](http://localhost:80)
 
-- MIT License
-- Not affiliated with or endorsed by onibus.info. Data is provided "as-is".
