@@ -11,3 +11,6 @@ venv.bak/
 .DS_Store
 *.log
 *.swp
+
+# docs folder
+docs/

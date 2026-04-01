@@ -1,0 +1,58 @@
+.route-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.route-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-color: #cbd5e1;
+}
+
+.route-icon {
+  background-color: #eff6ff;
+  color: #1e3a8a;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.route-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.route-id {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1e3a8a;
+}
+
+.route-name {
+  font-size: 0.875rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.route-action {
+  color: #cbd5e1;
+}
+
+.route-card:hover .route-action {
+  color: #1e3a8a;
+}

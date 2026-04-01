@@ -1,0 +1,46 @@
+/* Global App Styles */
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure mobile-first centered layout */
+main.app-main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 600px;
+  padding: 1.5rem 1rem 4rem; /* Bottom padding for mobile comfort */
+}
+
+/* Global utility for loading spinners */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Page transition placeholder if needed */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
